@@ -1,0 +1,10 @@
+{
+  "description": "Explore STACK-K’s immersive learning vision, products, brand identity, team, and promotional designs in an animated portfolio website.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

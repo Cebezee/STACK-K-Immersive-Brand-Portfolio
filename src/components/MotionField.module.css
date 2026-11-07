@@ -1,0 +1,182 @@
+.field {
+  min-width: 0;
+}
+.screen {
+  height: 320px;
+  border-radius: 6px;
+  background: radial-gradient(ellipse at 50% 60%, #30297888, transparent 70%), #151141;
+  position: relative;
+  overflow: hidden;
+}
+.screen canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: pan-y;
+  cursor: crosshair;
+}
+.screenTop,
+.screenBottom {
+  position: absolute;
+  left: 21px;
+  right: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  color: #c5b8e4;
+  font-size: 7px;
+  letter-spacing: 1px;
+  z-index: 1;
+  pointer-events: none;
+}
+.screenTop {
+  top: 21px;
+}
+.screenTop > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.screenTop i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #9e89fa;
+}
+.screenBottom {
+  bottom: 20px;
+  color: #b1a1ca;
+  font-size: 6px;
+}
+.forms {
+  display: flex;
+  gap: 7px;
+  border-bottom: 1px solid #e3dcec;
+  padding-block: 16px;
+}
+.forms button {
+  flex: 1;
+  min-height: 36px;
+  border: 1px solid #ddd4e9;
+  border-radius: 4px;
+  font-size: 11px;
+  color: #766587;
+  background: #f6f3fb;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+.forms button[aria-pressed="true"] {
+  background: #e9eafd;
+  color: #151141;
+  border-color: #a99bc8;
+}
+.forms button:hover {
+  background: #e9eafd;
+  color: #151141;
+}
+.description {
+  font-size: 12px;
+  color: #504d73;
+  line-height: 1.8;
+  margin-top: 14px;
+}
+.intensity {
+  display: block;
+  margin-top: 18px;
+}
+.intensity > span {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 10px;
+  color: #83718f;
+}
+.intensity strong {
+  color: #504d73;
+  font-weight: 450;
+  font-variant-numeric: tabular-nums;
+}
+.intensity input {
+  display: block;
+  width: 100%;
+  height: 30px;
+  accent-color: #3157a8;
+  cursor: pointer;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 22px;
+  margin-top: 12px;
+}
+.actions > :global(.button) {
+  gap: 14px;
+  font-size: 10px;
+  padding: 12px 16px;
+}
+.actions > :global(.text-link) {
+  font-size: 10px;
+}
+.note {
+  font-size: 9px;
+  line-height: 1.9;
+  color: #877392;
+  margin-top: 20px;
+}
+.unavailable {
+  position: absolute;
+  inset: 90px 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #e9eafd;
+  font-size: 12px;
+  line-height: 1.8;
+}
+@media (max-width: 650px) {
+  .screen {
+    height: 255px;
+  }
+  .screenTop,
+  .screenBottom {
+    left: 15px;
+    right: 15px;
+    font-size: 5px;
+    letter-spacing: 0.6px;
+    gap: 13px;
+  }
+  .screenTop {
+    top: 17px;
+  }
+  .screenBottom {
+    bottom: 16px;
+    font-size: 4px;
+  }
+  .forms {
+    padding-block: 13px;
+  }
+  .forms button {
+    font-size: 10px;
+    min-height: 40px;
+  }
+  .description {
+    font-size: 11px;
+  }
+  .intensity {
+    margin-top: 15px;
+  }
+  .note {
+    font-size: 8px;
+  }
+  .actions {
+    gap: 17px;
+  }
+  .actions > :global(.button) {
+    min-height: 42px;
+  }
+}

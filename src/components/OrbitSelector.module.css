@@ -1,0 +1,278 @@
+.selector {
+  margin-bottom: 30px;
+  border-top: 1px solid #e0dce8;
+  padding-top: 21px;
+}
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: #9a88a8;
+}
+.heading > span:last-child {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  font-size: 7px;
+}
+.track {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 35px;
+  margin-top: 18px;
+}
+.line {
+  position: absolute;
+  height: 1px;
+  left: 4%;
+  right: 4%;
+  top: 69px;
+  background: #dbd6e5;
+  transform-origin: left;
+}
+.stage {
+  position: relative;
+  text-align: left;
+  border-radius: 7px;
+  padding: 0 24px 16px;
+  transition: background 0.25s;
+  min-width: 0;
+}
+.stage:hover {
+  background: #e9eafd55;
+}
+.stage[aria-pressed="true"] {
+  background: #e9eafda6;
+}
+.diagram {
+  display: block;
+  height: 140px;
+  position: relative;
+}
+.ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border: 1px solid #b8b0cf88;
+  border-radius: 50%;
+  translate: -50% -50%;
+}
+.ringOne {
+  width: 102px;
+  height: 102px;
+}
+.ringTwo {
+  width: 140px;
+  height: 140px;
+  border-color: #9e89fa4d;
+}
+.ring > i {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #9e89fa;
+  top: -4px;
+  left: 50%;
+}
+.ringTwo > i {
+  background: #3157a8;
+  width: 5px;
+  height: 5px;
+  top: -3px;
+}
+.core {
+  position: absolute;
+  width: 27px;
+  height: 27px;
+  left: calc(50% - 13px);
+  top: calc(50% - 13px);
+  background: #3157a8;
+  border-radius: 50%;
+  box-shadow: 0 0 0 5px #fbfbfc;
+}
+.stage:nth-of-type(2) .core {
+  background: #504e9d;
+  width: 36px;
+  height: 36px;
+  top: calc(50% - 18px);
+  left: calc(50% - 18px);
+}
+.stage:nth-of-type(3) .core {
+  background: #9e89fa;
+  width: 21px;
+  height: 21px;
+  top: calc(50% - 10px);
+  left: calc(50% - 10px);
+}
+.orbitTick {
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 8%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #b3a6c7;
+}
+.label {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-top: 18px;
+}
+.label small {
+  font-size: 8px;
+  color: #b29cc1;
+}
+.label strong {
+  font-size: 20px;
+  font-weight: 450;
+  letter-spacing: -0.6px;
+}
+.label > svg {
+  margin-left: auto;
+  color: #a48eb5;
+}
+.description {
+  display: block;
+  font-size: 10px;
+  color: #9c85ac;
+  margin: 8px 0 0 25px;
+}
+.hint {
+  font-size: 9px;
+  color: #a18bad;
+  line-height: 1.8;
+  margin-top: 16px;
+}
+@media (max-width: 900px) {
+  .track {
+    gap: 17px;
+  }
+  .stage {
+    padding-inline: 17px;
+  }
+  .ringOne {
+    width: 83px;
+    height: 83px;
+  }
+  .ringTwo {
+    width: 119px;
+    height: 119px;
+  }
+  .label {
+    gap: 10px;
+  }
+  .label strong {
+    font-size: 18px;
+  }
+  .description {
+    font-size: 9px;
+    margin-left: 21px;
+  }
+}
+@media (max-width: 650px) {
+  .selector {
+    margin-bottom: 25px;
+    padding-top: 19px;
+  }
+  .heading {
+    font-size: 6px;
+    letter-spacing: 0.7px;
+    line-height: 1.8;
+  }
+  .heading > span:last-child {
+    max-width: 102px;
+    font-size: 5px;
+    gap: 6px;
+  }
+  .heading svg {
+    width: 11px;
+    flex-shrink: 0;
+  }
+  .track {
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .stage {
+    padding: 0 6px 13px;
+  }
+  .diagram {
+    height: 104px;
+  }
+  .line {
+    top: 52px;
+  }
+  .ringOne {
+    width: 57px;
+    height: 57px;
+  }
+  .ringTwo {
+    width: 82px;
+    height: 82px;
+  }
+  .core {
+    width: 19px;
+    height: 19px;
+    top: calc(50% - 9px);
+    left: calc(50% - 9px);
+  }
+  .stage:nth-of-type(2) .core {
+    width: 25px;
+    height: 25px;
+    top: calc(50% - 12px);
+    left: calc(50% - 12px);
+  }
+  .stage:nth-of-type(3) .core {
+    width: 16px;
+    height: 16px;
+    top: calc(50% - 8px);
+    left: calc(50% - 8px);
+  }
+  .ring > i {
+    width: 5px;
+    height: 5px;
+    top: -3px;
+  }
+  .ringTwo > i {
+    width: 4px;
+    height: 4px;
+    top: -2px;
+  }
+  .orbitTick {
+    display: none;
+  }
+  .label {
+    gap: 5px;
+    margin-top: 10px;
+  }
+  .label small {
+    font-size: 6px;
+  }
+  .label strong {
+    font-size: 13px;
+    letter-spacing: -0.3px;
+  }
+  .label > svg {
+    display: none;
+  }
+  .description {
+    font-size: 7px;
+    line-height: 1.7;
+    margin: 6px 0 0;
+  }
+  .hint {
+    font-size: 8px;
+    margin-top: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stage {
+    transition: none;
+  }
+}

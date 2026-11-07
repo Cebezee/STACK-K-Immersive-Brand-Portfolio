@@ -1,0 +1,831 @@
+.visualIndex {
+  position: absolute;
+  top: 22px;
+  left: 24px;
+  bottom: auto !important;
+  font-size: 8px !important;
+  color: #151141 !important;
+  background: #fbfbfcba;
+  backdrop-filter: blur(9px);
+  border: 1px solid #ffffff80;
+  padding: 7px 10px;
+  border-radius: 3px;
+  width: fit-content;
+  letter-spacing: 1.2px;
+}
+.motionEntry {
+  position: absolute;
+  left: 22px;
+  bottom: 22px;
+  top: auto;
+  right: auto !important;
+  width: fit-content !important;
+  height: 40px !important;
+  padding: 9px 13px;
+  border-radius: 25px !important;
+  background: #151141c7 !important;
+  border: 1px solid #e9eafd55 !important;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 10px;
+  color: #fbfbfc;
+  backdrop-filter: blur(10px);
+  z-index: 2 !important;
+}
+.motionEntry:hover {
+  background: #302978e6 !important;
+}
+.motionEntry > svg {
+  width: 12px !important;
+  height: 12px !important;
+  flex-shrink: 0;
+}
+.rail {
+  position: sticky;
+  top: 115px;
+  align-self: start;
+  border-left: 1px solid #e1dfeb;
+  padding-left: 25px;
+}
+.railHeading > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: #91879c;
+}
+.railHeading i {
+  width: 4px;
+  height: 4px;
+  background: #9e89fa;
+  border-radius: 50%;
+}
+.railHeading p {
+  margin-top: 13px;
+  font-size: 17px;
+  line-height: 1.4;
+  letter-spacing: -0.4px;
+}
+.railGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px 10px;
+  margin-top: 23px;
+}
+.railGrid > button {
+  display: block;
+  min-width: 0;
+  text-align: left;
+}
+.railGrid :global(.play-preview) {
+  height: 102px;
+  border-radius: 7px;
+}
+.railGrid :global(.play-logo) > img {
+  width: 56px;
+}
+.railGrid :global(.play-preview-button) {
+  width: 18px;
+  height: 18px;
+  right: 7px;
+  bottom: 7px;
+}
+.railGrid :global(.play-preview-button) > svg {
+  width: 8px;
+}
+.railGrid :global(.play-type) {
+  flex-direction: column;
+  gap: 0;
+}
+.railGrid :global(.play-type) > span {
+  font-size: 31px;
+}
+.railGrid :global(.play-type) > small {
+  font-size: 3px;
+}
+.railGrid :global(.play-colors) {
+  padding-inline: 14px;
+}
+.railGrid :global(.play-colors) > i {
+  height: 50px;
+}
+.railGrid :global(.play-product) > div {
+  width: 79px;
+  padding: 9px;
+}
+.railGrid :global(.play-product) strong {
+  font-size: 10px;
+  margin-top: 6px;
+}
+.railGrid :global(.play-product) > div > span {
+  font-size: 2px;
+}
+.railGrid :global(.play-product) i {
+  font-size: 3px;
+  margin-top: 7px;
+  padding-top: 5px;
+}
+.railGrid :global(.play-product) svg {
+  width: 7px;
+  height: 7px;
+}
+.railGrid :global(.play-perspective) > span {
+  font-size: 2px;
+  letter-spacing: 0.2px;
+  bottom: 10px;
+}
+.railGrid :global(.play-interface) > div {
+  width: 73px;
+  padding: 9px;
+}
+.railGrid :global(.play-interface) > div > span {
+  width: 15px;
+  height: 15px;
+  margin-bottom: 7px;
+}
+.railGrid :global(.play-interface) > div > i {
+  height: 3px;
+  margin-top: 3px;
+}
+.railGrid :global(.play-interface) > div > div {
+  gap: 4px;
+  margin-top: 8px;
+}
+.railGrid :global(.play-interface) > div > div > i {
+  height: 12px;
+}
+.railGrid > button > span {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  color: #9a8aa6;
+  font-size: 7px;
+  letter-spacing: 0.4px;
+  gap: 5px;
+}
+.railGrid > button:hover :global(.play-preview) {
+  transform: translateY(-3px);
+}
+.railLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  border-top: 1px solid #e1dfeb;
+  margin-top: 24px;
+  padding-top: 18px;
+  font-size: 10px;
+}
+.railNote {
+  display: block;
+  color: #a294ad;
+  letter-spacing: 0.6px;
+  font-size: 6px;
+  margin-top: 13px;
+}
+.dock {
+  position: fixed;
+  top: 50%;
+  right: 14px;
+  z-index: 45;
+  width: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 5px;
+  border: 1px solid #dedce6;
+  background: #fbfbfce8;
+  backdrop-filter: blur(18px);
+  border-radius: 40px;
+  box-shadow: 0 8px 35px #15114110;
+  translate: 0 -50%;
+}
+.dock a {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  width: 38px;
+  font-size: 11px;
+  color: #8d819b;
+  padding: 0;
+  border-radius: 25px;
+  white-space: nowrap;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.dock a:hover {
+  color: #151141;
+  background: #e9eafd80;
+}
+.dock a[aria-current] {
+  color: #151141;
+  background: #e9eafd;
+}
+.dock > .dockHome {
+  padding: 0;
+}
+.dockDivider {
+  display: block;
+  width: 18px;
+  height: 1px;
+  background: #e1dfeb;
+  margin-block: 3px;
+}
+.dockLabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.dockProgress {
+  position: absolute;
+  bottom: 3px;
+  left: 13px;
+  right: 13px;
+  height: 2px;
+  background: #9e89fa;
+  transform-origin: left;
+}
+.brandPreviewGrid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 50px;
+  align-items: center;
+}
+.brandVisual {
+  min-width: 0;
+}
+.brandVisual :global(.project-art) {
+  min-height: 355px;
+}
+.brandVisual :global(.identity-art-center) {
+  flex-direction: column;
+  gap: 20px;
+  padding-block: 25px;
+}
+.brandVisual :global(.identity-art-center) > div {
+  display: block;
+  font-size: 23px;
+  text-align: center;
+}
+.brandVisual :global(.identity-art-center) > div > span {
+  display: block;
+}
+.brandVisual :global(.identity-art-center) > div > span:first-child br {
+  display: none;
+}
+.brandVisual :global(.identity-art-foot) {
+  min-height: 38px;
+}
+.brandVisual :global(.poster-art) > img {
+  height: 300px;
+}
+.overline {
+  font-size: 8px;
+  line-height: 1.8;
+  letter-spacing: 1px;
+  color: #9a89a8;
+}
+.brandText h3 {
+  font-size: 33px;
+  line-height: 1.14;
+  letter-spacing: -1px;
+  margin-top: 18px;
+}
+.brandText > p:not(.overline) {
+  font-size: 12px;
+  line-height: 1.9;
+  color: #797085;
+  margin-top: 19px;
+  max-width: 410px;
+}
+.brandText > p.brandDetail {
+  color: #93839f;
+  font-size: 11px;
+  margin-top: 16px;
+}
+.brandText > :global(.button) {
+  margin-top: 23px;
+  padding: 13px 17px;
+  font-size: 11px;
+  gap: 24px;
+}
+.brandText > :global(.text-link) {
+  margin-top: 16px;
+  font-size: 11px;
+}
+.officialLogos {
+  display: flex;
+  align-items: center;
+  gap: 35px;
+  margin-top: 25px;
+}
+.officialLogos > figure {
+  min-width: 0;
+}
+.officialLogos :global(.primary-logo) {
+  width: 80px;
+}
+.officialLogos :global(.secondary-logo) {
+  width: 92px;
+}
+.officialLogos figcaption {
+  font-size: 5px;
+  letter-spacing: 0.4px;
+  color: #ac95ba;
+  margin-top: 13px;
+  line-height: 1.7;
+}
+.originalPresentation {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 10px;
+  color: #9e89b2;
+  font-size: 8px;
+  margin-top: 16px;
+}
+.brandEssentials {
+  border-top: 1px solid #dbd7e6;
+  padding-top: 25px;
+  margin-top: 35px;
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 50px;
+}
+.brandEssentials > div > span {
+  font-size: 7px;
+  letter-spacing: 0.9px;
+  color: #a48eb2;
+}
+.miniPalette {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 7px;
+  margin-top: 15px;
+}
+.miniPalette button {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 9px;
+}
+.miniPalette i {
+  display: block;
+  height: 35px;
+  width: 100%;
+  border-radius: 3px;
+  border: 1px solid #15114109;
+  transition: transform 0.25s;
+}
+.miniPalette button:hover i {
+  transform: translateY(-3px);
+}
+.miniPalette button > span {
+  font-size: 6px;
+  color: #a18cae;
+}
+.typePair p {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin-top: 17px;
+  color: #504d73;
+}
+.typePair p > span {
+  font-family: "Audiowide", sans-serif;
+  font-size: 20px;
+}
+.typePair p > strong {
+  font-weight: 500;
+  font-size: 23px;
+}
+.typePair small {
+  font-size: 6px;
+  color: #b099bd;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-top: 13px;
+}
+.inlineFilm {
+  display: grid;
+  grid-template-columns: 0.65fr 1fr;
+  gap: 45px;
+  align-items: center;
+  border-top: 1px solid #dbd7e6;
+  margin-top: 36px;
+  padding-top: 32px;
+}
+.inlineFilm > :global(.logo-film) {
+  margin-top: 0;
+}
+.inlineFilm h4 {
+  font-size: 27px;
+  line-height: 1.2;
+  letter-spacing: -0.8px;
+  margin-top: 18px;
+}
+.inlineFilm > div:first-child > p:last-child {
+  font-size: 11px;
+  color: #9681a5;
+  line-height: 1.9;
+  margin-top: 17px;
+}
+.inlineFilm :global(.film-screen) {
+  height: 275px;
+}
+.inlineFilm :global(.film-secondary) {
+  width: 245px;
+  height: auto;
+  object-fit: contain;
+}
+.inlineFilm :global(.film-components) {
+  gap: 15px;
+}
+.inlineFilm :global(.film-components) > div {
+  width: 80px;
+}
+.inlineFilm :global(.film-topline),
+.inlineFilm :global(.film-bottomline) {
+  font-size: 4px;
+}
+.inlineFilm :global(.film-components) small {
+  font-size: 4px;
+}
+.footerSignature {
+  margin-top: 37px;
+  border-top: 1px solid #e0dbe8;
+  padding-top: 25px;
+  overflow: hidden;
+}
+.footerSignature > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.footerSignature > div:first-child > span {
+  font-size: 7px;
+  letter-spacing: 1px;
+  color: #9f8aae;
+}
+.footerSignature a {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 11px;
+}
+.signatureArtwork {
+  background: transparent;
+  border-radius: 5px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-top: 23px;
+  padding: 100px 36px 36px;
+}
+.signatureLogo {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+}
+.footerSignature :global(.secondary-logo) {
+  width: 280px;
+  height: auto;
+}
+.footerSignature > p {
+  text-align: center;
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: #a28cb3;
+  margin-top: 20px;
+  padding-bottom: 27px;
+}
+@media (max-width: 1100px) {
+  .rail {
+    padding-left: 18px;
+  }
+  .railHeading p {
+    font-size: 15px;
+  }
+  .railHeading > span {
+    font-size: 6px;
+  }
+  .railGrid {
+    gap: 13px 8px;
+  }
+  .railGrid :global(.play-preview) {
+    height: 87px;
+  }
+  .railGrid > button > span {
+    font-size: 5px;
+  }
+  .brandPreviewGrid {
+    gap: 30px;
+  }
+  .brandText h3 {
+    font-size: 29px;
+  }
+  .brandVisual :global(.identity-art-center) > div {
+    font-size: 20px;
+  }
+  .inlineFilm {
+    gap: 30px;
+    grid-template-columns: 0.55fr 1fr;
+  }
+  .inlineFilm :global(.film-components) {
+    gap: 10px;
+  }
+  .inlineFilm :global(.film-components) > div {
+    width: 65px;
+  }
+}
+@media (max-width: 900px) {
+  .rail {
+    position: static;
+    padding-left: 0;
+    padding-top: 27px;
+    border-left: 0;
+    border-top: 1px solid #e1dfeb;
+  }
+  .railHeading {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 30px;
+  }
+  .railHeading p {
+    margin-top: 0;
+    font-size: 15px;
+  }
+  .railGrid {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+    margin-top: 18px;
+  }
+  .railGrid :global(.play-preview) {
+    height: 95px;
+  }
+  .railHeading > span {
+    font-size: 8px;
+  }
+  .railGrid > button > span {
+    font-size: 6px;
+  }
+  .railLink {
+    width: fit-content;
+    gap: 30px;
+    border-top: 0;
+    padding-top: 0;
+    margin-top: 20px;
+  }
+  .railNote {
+    display: none;
+  }
+  .brandVisual :global(.project-art) {
+    min-height: 330px;
+  }
+  .brandText h3 {
+    font-size: 26px;
+  }
+  .brandText > p:not(.overline) {
+    font-size: 11px;
+  }
+  .officialLogos {
+    gap: 23px;
+  }
+  .officialLogos :global(.primary-logo) {
+    width: 65px;
+  }
+  .officialLogos :global(.secondary-logo) {
+    width: 72px;
+  }
+  .officialLogos figcaption {
+    font-size: 4px;
+  }
+  .brandEssentials {
+    gap: 30px;
+  }
+  .typePair p {
+    gap: 20px;
+  }
+  .typePair p > span {
+    font-size: 17px;
+  }
+  .typePair p > strong {
+    font-size: 20px;
+  }
+  .miniPalette {
+    gap: 5px;
+  }
+  .miniPalette button > span {
+    font-size: 5px;
+  }
+  .inlineFilm {
+    grid-template-columns: 1fr;
+    gap: 23px;
+  }
+  .inlineFilm > div:first-child {
+    max-width: 450px;
+  }
+  .inlineFilm h4 {
+    font-size: 25px;
+  }
+  .inlineFilm :global(.film-screen) {
+    height: 310px;
+  }
+}
+@media (max-width: 650px) {
+  .visualIndex {
+    top: 18px;
+    left: 20px;
+    font-size: 6px !important;
+  }
+  .railHeading > span {
+    font-size: 7px;
+  }
+  .railHeading p {
+    font-size: 14px;
+  }
+  .railGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 17px 11px;
+  }
+  .railGrid :global(.play-preview) {
+    height: 107px;
+  }
+  .railGrid :global(.play-logo) > img {
+    width: 59px;
+  }
+  .railGrid > button > span {
+    font-size: 6px;
+  }
+  .railLink {
+    font-size: 11px;
+  }
+  .dock {
+    bottom: 14px;
+    padding: 5px;
+    gap: 3px;
+  }
+  .dock a {
+    font-size: 10px;
+    padding: 11px 13px;
+    gap: 6px;
+  }
+  .dock > .dockHome {
+    padding-inline: 11px;
+  }
+  .dockDivider {
+    margin-inline: 1px;
+  }
+  .brandPreviewGrid {
+    grid-template-columns: 1fr;
+    gap: 27px;
+  }
+  .brandVisual :global(.project-art) {
+    min-height: 315px;
+  }
+  .brandVisual :global(.poster-art) > img {
+    height: 265px;
+  }
+  .brandVisual :global(.identity-art-center) > div {
+    font-size: 22px;
+  }
+  .brandText h3 {
+    font-size: 29px;
+  }
+  .overline {
+    font-size: 7px;
+  }
+  .brandText > p:not(.overline) {
+    font-size: 12px;
+    line-height: 1.85;
+    margin-top: 17px;
+  }
+  .brandText > p.brandDetail {
+    font-size: 11px;
+  }
+  .brandText > :global(.button) {
+    font-size: 10px;
+    gap: 23px;
+    padding: 13px 15px;
+  }
+  .brandText > :global(.text-link) {
+    font-size: 10px;
+  }
+  .officialLogos {
+    gap: 36px;
+  }
+  .officialLogos :global(.primary-logo) {
+    width: 78px;
+  }
+  .officialLogos :global(.secondary-logo) {
+    width: 91px;
+  }
+  .officialLogos figcaption {
+    font-size: 4px;
+  }
+  .originalPresentation {
+    font-size: 7px;
+    line-height: 1.8;
+  }
+  .brandEssentials {
+    grid-template-columns: 1fr;
+    gap: 27px;
+    margin-top: 29px;
+    padding-top: 24px;
+  }
+  .brandEssentials > div > span {
+    font-size: 6px;
+  }
+  .miniPalette {
+    gap: 5px;
+  }
+  .miniPalette i {
+    height: 36px;
+  }
+  .miniPalette button > span {
+    font-size: 5px;
+  }
+  .typePair p {
+    gap: 27px;
+    margin-top: 15px;
+  }
+  .typePair p > span {
+    font-size: 21px;
+  }
+  .typePair p > strong {
+    font-size: 25px;
+  }
+  .typePair small {
+    font-size: 5px;
+  }
+  .inlineFilm {
+    padding-top: 26px;
+    margin-top: 28px;
+  }
+  .inlineFilm :global(.film-screen) {
+    height: 260px;
+  }
+  .inlineFilm :global(.film-secondary) {
+    width: 200px;
+  }
+  .inlineFilm :global(.film-components) > div {
+    width: 65px;
+  }
+  .inlineFilm :global(.film-topline),
+  .inlineFilm :global(.film-bottomline) {
+    font-size: 4px;
+  }
+  .footerSignature {
+    margin-top: 23px;
+    padding-top: 21px;
+  }
+  .footerSignature > div:first-child > span {
+    font-size: 5px;
+    letter-spacing: 0.5px;
+    max-width: 170px;
+    line-height: 1.8;
+  }
+  .footerSignature a {
+    font-size: 10px;
+    gap: 10px;
+  }
+  .signatureArtwork {
+    padding: 78px 25px 25px;
+  }
+  .motionEntry {
+    left: 17px;
+    bottom: 17px;
+    font-size: 9px;
+    height: 44px !important;
+    padding: 9px 11px;
+  }
+  .footerSignature :global(.secondary-logo) {
+    width: 210px;
+  }
+  .footerSignature > p {
+    font-size: 6px;
+    letter-spacing: 1.2px;
+    padding-bottom: 45px;
+  }
+}
+@media (max-width: 1399px) {
+  .dock {
+    display: none;
+  }
+}

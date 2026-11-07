@@ -1,0 +1,172 @@
+.caption {
+  min-width: 0;
+  margin-top: 5px;
+}
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid #ded9e9;
+}
+.toolbar > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #504d73;
+}
+.toolbar > div {
+  display: inline-flex;
+  border: 1px solid #d9d2e5;
+  border-radius: 5px;
+  padding: 3px;
+  background: #f8f7fc;
+}
+.toolbar button {
+  font-size: 11px;
+  color: #504d73;
+  padding: 7px 10px;
+  border-radius: 3px;
+  min-height: 36px;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    box-shadow 0.2s;
+}
+.toolbar button[aria-pressed="true"] {
+  background: #151141;
+  color: #fbfbfc;
+  box-shadow: 0 2px 5px #1511410a;
+}
+.toolbar button:hover:not([aria-pressed="true"]) {
+  background: #e9eafd;
+  color: #151141;
+}
+.copy {
+  padding-top: 22px;
+}
+.caption .readable,
+.caption .original {
+  font-family: "Archivo", "Segoe UI Symbol", sans-serif;
+  font-size: 16px;
+  line-height: 1.85;
+  color: #504d73;
+  overflow-wrap: anywhere;
+  margin: 0;
+  letter-spacing: 0;
+  font-style: normal;
+}
+.caption .readable {
+  white-space: normal;
+}
+.readable > p:first-child {
+  font-size: 21px;
+  line-height: 1.45;
+  letter-spacing: -0.5px;
+  color: #151141;
+  font-weight: 500;
+}
+.readable > p + p {
+  margin-top: 18px;
+}
+.readable strong {
+  font-weight: 700;
+  color: #151141;
+}
+.caption .original {
+  white-space: pre-line;
+  font-size: 15px;
+  line-height: 2;
+}
+.bottom {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 17px;
+  margin-top: 18px;
+}
+.caption .bottom > :global(.text-link) {
+  font-size: 11px;
+  margin-top: 0;
+}
+.bottom > span {
+  font-size: 10px;
+  color: #504d73;
+  line-height: 1.6;
+}
+.compact {
+  margin-top: 25px;
+}
+.compact .toolbar {
+  gap: 12px;
+  padding-bottom: 13px;
+}
+.compact .toolbar > span {
+  font-size: 8px;
+}
+.compact .toolbar button {
+  font-size: 11px;
+  padding-inline: 9px;
+}
+.compact .copy {
+  padding-top: 17px;
+}
+.compact .readable {
+  font-size: 14px;
+  line-height: 1.85;
+}
+.compact .readable > p:first-child {
+  font-size: 18px;
+  letter-spacing: -0.4px;
+}
+.compact .original {
+  font-size: 13px;
+}
+.compact .bottom {
+  gap: 13px;
+  margin-top: 13px;
+}
+.compact .bottom > span {
+  font-size: 10px;
+}
+@media (max-width: 650px) {
+  .toolbar {
+    gap: 12px;
+    padding-bottom: 15px;
+  }
+  .toolbar > span {
+    font-size: 8px;
+  }
+  .toolbar button,
+  .compact .toolbar button {
+    font-size: 11px;
+    min-height: 40px;
+  }
+  .caption .readable {
+    font-size: 14px;
+    line-height: 1.85;
+  }
+  .readable > p:first-child {
+    font-size: 19px;
+    line-height: 1.5;
+  }
+  .caption .original {
+    font-size: 13px;
+  }
+  .compact .readable {
+    font-size: 14px;
+  }
+  .compact .readable > p:first-child {
+    font-size: 18px;
+  }
+  .compact .original {
+    font-size: 13px;
+  }
+  .bottom > span {
+    font-size: 10px;
+  }
+}

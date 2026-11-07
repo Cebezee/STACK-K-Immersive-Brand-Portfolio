@@ -1,0 +1,21 @@
+.ribbon {
+  position: absolute;
+  top: 0;
+  left: -3%;
+  right: -3%;
+  height: 100px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.ribbon > svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+@media (max-width: 650px) {
+  .ribbon {
+    left: -7%;
+    right: -7%;
+    height: 78px;
+  }
+}
