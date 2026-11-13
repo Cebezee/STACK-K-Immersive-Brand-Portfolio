@@ -17,9 +17,7 @@
   display: grid;
   place-items: center;
   color: var(--lavender);
-  background:
-    radial-gradient(circle at 50% 50%, #504e9d 0, #302978 17%, #151141 58%),
-    var(--navy);
+  background: radial-gradient(circle at 50% 50%, #504e9d 0, #302978 17%, #151141 58%), var(--navy);
   isolation: isolate;
 }
 .brief-sequence-stage {
@@ -40,12 +38,49 @@
   top: 62%;
   left: 0;
   height: 48%;
-  background:
-    linear-gradient(135deg, #ffffff 0%, #fbfbfc 55%, #e9eafd 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #fbfbfc 55%, #e9eafd 100%);
   border-top: 1px solid #dfe0ea;
   box-shadow: 0 -18px 50px #15114112;
   pointer-events: none;
+  /* Starts off-screen so the hero never flashes white before GSAP takes over,
+     and stays there entirely when motion is reduced. */
+  transform: translateY(100%);
   will-change: transform;
+}
+/* Slow drifting light so the dark hero feels lit rather than flat. Compositor
+   friendly: transform only, and disabled alongside the other hero loops. */
+.brief-sequence-glow {
+  position: absolute;
+  inset: -12%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 44% at 26% 32%, #5b7ff059 0%, transparent 70%),
+    radial-gradient(34% 40% at 76% 66%, #9e89fa4d 0%, transparent 72%),
+    radial-gradient(28% 34% at 62% 16%, #ffffff26 0%, transparent 70%);
+  animation: brief-glow 17s ease-in-out infinite alternate;
+  will-change: transform;
+}
+/* Contains the orbit and core so pointer parallax never fights the CSS
+   keyframes running on those two elements. */
+.brief-sequence-parallax {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  will-change: transform;
+}
+.brief-sequence-copy h2 > span {
+  display: block;
+}
+@keyframes brief-glow {
+  from {
+    transform: translate3d(-1.6%, -1.2%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(1.6%, 1.6%, 0) scale(1.06);
+  }
 }
 .brief-sequence::before {
   content: "";
@@ -84,7 +119,9 @@
   border: 1px solid #9e89fa55;
   border-radius: 50%;
   transform: rotateX(66deg) rotateZ(-20deg);
-  box-shadow: 0 0 80px #3157a844, inset 0 0 50px #9e89fa22;
+  box-shadow:
+    0 0 80px #3157a844,
+    inset 0 0 50px #9e89fa22;
   animation: brief-orbit 12s linear infinite;
 }
 .brief-sequence-core {
@@ -135,7 +172,9 @@
   border: 2px solid #fff;
   border-radius: 50%;
   background: #e9eafd;
-  box-shadow: 0 0 24px 8px #ffffffaa, 0 0 70px 20px #9e89fa88;
+  box-shadow:
+    0 0 24px 8px #ffffffaa,
+    0 0 70px 20px #9e89fa88;
   animation: core-pulse 2.2s ease-in-out infinite;
 }
 .brief-sequence-copy {
@@ -194,7 +233,12 @@
   color: #e9eafd88;
   border-top: 2px solid transparent;
   background: #15114135;
-  transition: color 0.25s, border-color 0.25s, background 0.25s, transform 0.25s, box-shadow 0.25s;
+  transition:
+    color 0.25s,
+    border-color 0.25s,
+    background 0.25s,
+    transform 0.25s,
+    box-shadow 0.25s;
 }
 .brief-sequence-chapter:hover {
   color: var(--lavender);
@@ -236,16 +280,79 @@
   line-height: 1.55;
 }
 .brief-sequence-chapter a {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   color: #e9eafd99;
   font-size: 10px;
-  transition: color 0.2s, gap 0.2s;
+  transition:
+    color 0.2s,
+    gap 0.2s;
 }
-.brief-sequence-chapter a:hover {
+.brief-sequence-chapter a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -7px;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--soft), #9e89fa00);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.brief-sequence-chapter a:hover,
+.brief-sequence-chapter a:focus-visible {
   color: var(--lavender);
+}
+.brief-sequence-chapter:hover a,
+.brief-sequence-chapter a:focus-visible {
   gap: 12px;
+}
+.brief-sequence-chapter a:hover::after,
+.brief-sequence-chapter a:focus-visible::after {
+  transform: scaleX(1);
+}
+/* Lottie wrapper: an inline-flex box the same size as the lucide icon it
+   replaces, so the two are interchangeable and layout never shifts. Both
+   layers are absolutely placed inside it, so neither can change the box. */
+.lottie-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  vertical-align: middle;
+}
+.lottie-icon__host,
+.lottie-icon__fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lottie-icon__host svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* Scoped to the lucide fallback: the Lottie player owns its own motion, and a
+   keyframe animation on top of it would fight the player's transforms. */
+.brief-sequence-scroll svg.lucide-arrow-down {
+  animation: brief-cue 1.9s ease-in-out infinite;
+}
+@keyframes brief-cue {
+  0%,
+  100% {
+    transform: translateY(-2px);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(3px);
+    opacity: 1;
+  }
 }
 .brief-sequence-coordinate,
 .brief-sequence-scroll {
@@ -311,26 +418,49 @@ body.has-custom-cursor button {
   cursor: none;
 }
 @keyframes brief-ray {
-  from { opacity: 0.3; transform: translate(-50%, -5%) rotate(var(--ray-angle)) scaleY(0.65); }
-  to { opacity: 1; transform: translate(-50%, -5%) rotate(var(--ray-angle)) scaleY(1.05); }
+  from {
+    opacity: 0.3;
+    transform: translate(-50%, -5%) rotate(var(--ray-angle)) scaleY(0.65);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -5%) rotate(var(--ray-angle)) scaleY(1.05);
+  }
 }
 @keyframes brief-orbit {
-  to { transform: rotateX(66deg) rotateZ(340deg); }
+  to {
+    transform: rotateX(66deg) rotateZ(340deg);
+  }
 }
 @keyframes brief-drift {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 @keyframes core-ray {
-  from { opacity: 0.35; transform: translate(-50%, -4%) rotate(var(--core-angle)) scaleY(0.7); }
-  to { opacity: 1; transform: translate(-50%, -4%) rotate(var(--core-angle)) scaleY(1.08); }
+  from {
+    opacity: 0.35;
+    transform: translate(-50%, -4%) rotate(var(--core-angle)) scaleY(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -4%) rotate(var(--core-angle)) scaleY(1.08);
+  }
 }
 @keyframes core-pulse {
-  50% { transform: translate(-50%, -50%) scale(1.18); box-shadow: 0 0 34px 12px #ffffffbb, 0 0 90px 28px #9e89fa99; }
+  50% {
+    transform: translate(-50%, -50%) scale(1.18);
+    box-shadow:
+      0 0 34px 12px #ffffffbb,
+      0 0 90px 28px #9e89fa99;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .brief-sequence-rays,
   .brief-sequence-rays i,
   .brief-sequence-orbit,
+  .brief-sequence-glow,
+  .brief-sequence-scroll svg,
   .film-screen::after,
   .film-components,
   .digital-transition::before,
@@ -462,9 +592,29 @@ body.has-custom-cursor button {
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 100px;
+    /* Decorative elements (hero glow/rays, orbit rings) bleed past the viewport
+       edge. `clip` rather than `hidden` disables horizontal scrolling without
+       turning the root into a scroll container, which would break the sticky
+       header. Applied to html because that is where the viewport picks its
+       overflow up from — the same declaration on body alone does not clip. */
+    overflow-x: clip;
   }
   body {
     min-width: 320px;
+    overflow-x: clip;
+  }
+  /* Lenis owns scrolling while it is mounted: neutralise the native smooth
+     behaviour so the browser and Lenis never animate at the same time. These
+     rules drop away again the moment Lenis is torn down. */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
   }
   a {
     color: inherit;
@@ -530,6 +680,25 @@ body.has-custom-cursor button {
 .team-section::after {
   top: 10%;
   right: -14vw;
+}
+/* Scroll-linked drift for the About ring; the value is written by ScrollTrigger
+   so the rotation animation above keeps full ownership of `transform`. */
+.about-section::after {
+  translate: 0 var(--ring-y, 0px);
+}
+/* Parallax rides on the independent `translate` property so it composes with —
+   and never overwrites — the hover `transform` rules on these same images. The
+   value is a unitless scalar multiplied into a percentage of the image's own
+   height, so the drift stays proportional to the frame at every breakpoint. */
+[data-parallax] {
+  translate: 0 calc(var(--parallax-p, 0) * 1%);
+}
+/* Cover-filled images need a little headroom so the drift never exposes an
+   edge of the frame: 1.06 buys 3% of height on each side, and the scalar above
+   never exceeds 2.5%. */
+.experience-photo > img[data-parallax],
+.team-photo-button > img[data-parallax] {
+  scale: 1.06;
 }
 .experiences-section::after,
 .brand-section::after {
@@ -671,6 +840,20 @@ body.has-custom-cursor button {
   border-bottom: 1px solid var(--line);
   background: #fbfbfcf0;
   backdrop-filter: blur(16px);
+}
+/* The bar only ever moves on the compositor, so hide/reveal costs no layout. */
+.site-header.is-scrolled {
+  box-shadow: 0 12px 34px -26px rgba(16, 24, 64, 0.55);
+}
+.site-header.is-hidden {
+  transform: translateY(-100%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .site-header {
+    transition:
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.4s ease;
+  }
 }
 .header-inner {
   height: 72px;
@@ -1403,7 +1586,10 @@ body.has-custom-cursor button {
   padding: 14px;
   border: 1px solid #d5d0e3;
   background: #fbfbfccc;
-  transition: transform 0.3s, background 0.3s, border-color 0.3s;
+  transition:
+    transform 0.3s,
+    background 0.3s,
+    border-color 0.3s;
 }
 .prototype-step:hover {
   transform: translateY(-6px);
@@ -1560,6 +1746,39 @@ body.has-custom-cursor button {
   font-size: 9px;
   margin-top: 15px;
 }
+/* Cards lift and light up on hover. The border glow is a pseudo-element so the
+   entrance tween can own `transform` on the card itself without conflict. */
+.experience-preview {
+  position: relative;
+  border-radius: 4px;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.experience-preview::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  pointer-events: none;
+  transition:
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .experience-preview:hover {
+    transform: translateY(-6px);
+  }
+  .experience-preview:hover::after {
+    border-color: #9e89fa88;
+    box-shadow:
+      0 0 22px #9e89fa40,
+      inset 0 0 18px #9e89fa1f;
+  }
+}
+.experience-preview:focus-within::after {
+  border-color: #9e89fa88;
+  box-shadow: 0 0 22px #9e89fa40;
+}
 .experience-note {
   display: flex;
   align-items: center;
@@ -1635,7 +1854,9 @@ body.has-custom-cursor button {
   inset: -28px -24px;
   border: 1px solid transparent;
   pointer-events: none;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
 }
 .brand-material-item:hover::before {
   border-color: #3157a833;
@@ -2352,7 +2573,10 @@ body.has-custom-cursor button {
     linear-gradient(90deg, transparent 49.8%, #504e9d26 50%, transparent 50.2%),
     linear-gradient(transparent 49.8%, #504e9d26 50%, transparent 50.2%),
     radial-gradient(circle at 50% 50%, #ffffffaa, transparent 42%);
-  background-size: 100% 100%, 100% 100%, 100% 100%;
+  background-size:
+    100% 100%,
+    100% 100%,
+    100% 100%;
   pointer-events: none;
 }
 .film-screen::after {
@@ -2481,14 +2705,25 @@ body.has-custom-cursor button {
   padding-top: 16px;
 }
 @keyframes film-orbit {
-  to { transform: translate(-50%, -50%) rotateX(65deg) rotateZ(360deg); }
+  to {
+    transform: translate(-50%, -50%) rotateX(65deg) rotateZ(360deg);
+  }
 }
 @keyframes construction-breathe {
-  50% { transform: translateY(-4px); }
+  50% {
+    transform: translateY(-4px);
+  }
 }
 @keyframes construction-scan {
-  0%, 100% { opacity: 0.15; transform: translate(-50%, -50%) rotate(28deg) scaleX(0.65); }
-  50% { opacity: 0.8; transform: translate(-50%, -50%) rotate(28deg) scaleX(1); }
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: translate(-50%, -50%) rotate(28deg) scaleX(0.65);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) rotate(28deg) scaleX(1);
+  }
 }
 .film-controls .round-button {
   width: 31px;
@@ -2785,7 +3020,9 @@ body.has-custom-cursor button {
   border-radius: 50%;
   box-shadow: 0 0 0 0 #ffffff00;
   pointer-events: none;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
 }
 .team-photo-button:hover::after,
 .team-photo-button:focus-visible::after {
@@ -2846,10 +3083,13 @@ body.has-custom-cursor button {
   margin-top: 9px;
 }
 @keyframes section-orbit {
-  to { transform: rotate(360deg) translateX(10px) rotate(-360deg); }
+  to {
+    transform: rotate(360deg) translateX(10px) rotate(-360deg);
+  }
 }
 @keyframes teacher-presence {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1.03) translate3d(0, 0, 0) rotate(0deg);
     object-position: center 20%;
   }

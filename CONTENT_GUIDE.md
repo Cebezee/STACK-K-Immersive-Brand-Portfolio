@@ -1,6 +1,6 @@
 # Updating the STACK-K portfolio
 
-This is a React + Vite website in Figma Make, not a native Framer file. Animations use Motion for React. No CMS was connected, so updates are made in source files.
+This is a React + Vite website in Figma Make, not a native Framer file. Animations use GSAP with ScrollTrigger for scroll-driven reveals and section transitions, Lenis for smooth scrolling (integrated with GSAP), Lottie (`lottie-web`, lazy-loaded light player) for two small looping icons in `public/lottie/`, and CSS transitions for button and hover states. Motion for React is still used for the modal, toast, and mobile menu (AnimatePresence exits). All animation respects `prefers-reduced-motion`. No CMS was connected, so updates are made in source files.
 
 ## Main content: `src/data.ts`
 
@@ -40,6 +40,10 @@ The featured visual is now the brighter VR headset studio photograph by Remy Gie
 - `src/components/InteractionFeedback.tsx`: a shared native-button and link feedback layer. It adds pointer-aware hover lift, small magnetic movement on main controls, spring-like press/release feedback, and clipped click waves without replacing native semantics or click handlers. Touch has press feedback without persistent hover; reduced-motion preferences disable these effects.
 - `src/components/OrbitSelector.tsx` and its CSS module: scroll-linked orbital motion inspired by the supplied reference. Its three accessible buttons filter the real experience collection; they are not decorative no-op controls.
 - `src/hooks/usePrefersReducedMotion.ts`: live system-motion preferences shared across the page, dialogs, globe, and prototypes. Changing the preference immediately disables movement rather than requiring a reload.
+- `src/lib/gsap.ts`: registers GSAP ScrollTrigger and exports the shared `gsap`, `ScrollTrigger`, `REVEAL` timing, and reduced-motion helper used by the page animations.
+- `src/lib/smoothScroll.ts`: Lenis lifecycle (`startSmoothScroll`, `stopSmoothScroll`, `scrollToTarget`, `bindAnchorScrolling`). Lenis is started in `src/App.tsx`, stopped while the case-study dialog scroll lock is active, and skipped entirely under reduced-motion preferences.
+- `src/hooks/useImageParallax.ts`: scroll-driven image parallax for elements marked `data-parallax`. It animates an independent CSS `translate` property (never `transform`), so hover effects keep working, and it writes nothing under reduced motion.
+- `src/components/LottieIcon.tsx`: lazy-loads the light `lottie-web` player for the looping icons in `public/lottie/` (`scroll-cue.json` for the hero scroll cue, `cta-arrow.json` for the footer link). It pauses off-screen, falls back to the lucide icon in an identically sized box (no layout shift), and shows only the static lucide icon under reduced motion.
 - `src/index.css`: the responsive layout, font wiring, colors, and interaction styles.
 
 Both fonts are served locally. Archivo is variable (100–900); Audiowide has one regular weight and is not artificially bolded. Complete case studies now open from compact previews so the page is easier to browse; the original content remains available in the case-study dialogs.

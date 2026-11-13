@@ -2,6 +2,7 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { motion } from "motion/react";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
+import { getSmoothScroll } from "../lib/smoothScroll";
 import { X } from "lucide-react";
 
 export default function Modal({
@@ -24,6 +25,8 @@ export default function Modal({
     const previous = document.activeElement as HTMLElement | null;
     const overflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    // Lenis must not keep animating against a viewport that is locked shut.
+    getSmoothScroll()?.stop();
     dialog.current?.focus();
     function keydown(event: KeyboardEvent) {
       if (event.key === "Escape") onClose();
@@ -49,6 +52,7 @@ export default function Modal({
     document.addEventListener("keydown", keydown);
     return () => {
       document.body.style.overflow = overflow;
+      getSmoothScroll()?.start();
       document.removeEventListener("keydown", keydown);
       (focusAfterClose?.() || previous)?.focus({ preventScroll: true });
     };

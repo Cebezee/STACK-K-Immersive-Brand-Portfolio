@@ -1,22 +1,10 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import {
-  AnimatePresence,
-  MotionConfig,
-  motion,
-  useScroll,
-  useSpring,
-  useTransform,
-} from "motion/react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { AnimatePresence, MotionConfig, motion, useScroll, useSpring } from "motion/react";
 import { usePrefersReducedMotion } from "./hooks/usePrefersReducedMotion";
-import {
-  ArrowUpRight,
-  ArrowDown,
-  ArrowRight,
-  ArrowUp,
-  Menu,
-  X,
-  Check,
-} from "lucide-react";
+import { useImageParallax } from "./hooks/useImageParallax";
+import { bindAnchorScrolling, scrollToTarget, startSmoothScroll } from "./lib/smoothScroll";
+import { gsap, REVEAL, ScrollTrigger } from "./lib/gsap";
+import { ArrowUpRight, ArrowDown, ArrowRight, ArrowUp, Menu, X, Check } from "lucide-react";
 import {
   company,
   featuredVisual,
@@ -29,6 +17,7 @@ import {
   type ProjectId,
 } from "./data";
 import Modal from "./components/Modal";
+import { LottieIcon } from "./components/LottieIcon";
 import {
   IdentityCaseStudy,
   LogoCaseStudy,
@@ -39,10 +28,7 @@ import {
 } from "./components/CaseStudies";
 import InteractionFeedback from "./components/InteractionFeedback";
 import OrbitSelector from "./components/OrbitSelector";
-import {
-  BrandPreview,
-  FooterSignature,
-} from "./components/PortfolioEnhancements";
+import { BrandPreview, FooterSignature } from "./components/PortfolioEnhancements";
 
 const navigation = [
   { id: "home", label: "Home" },
@@ -67,22 +53,49 @@ function Reveal({
   children,
   className = "",
   delay = 0,
+  stagger = 0,
 }: {
   children: ReactNode;
   className?: string;
   delay?: number;
+  /** When set, the direct children reveal one after another instead of the wrapper. */
+  stagger?: number;
 }) {
+  const ref = useRef<HTMLDivElement>(null);
   const reduced = usePrefersReducedMotion();
+
+  // One context per instance so StrictMode's double effect and any preference
+  // flip both leave the markup exactly as it was authored.
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || reduced) return;
+
+    const ctx = gsap.context(() => {
+      const targets = stagger > 0 ? Array.from(el.children) : [el];
+      if (targets.length === 0) return;
+
+      gsap.from(targets, {
+        opacity: 0,
+        y: REVEAL.distance,
+        duration: REVEAL.duration,
+        delay,
+        stagger,
+        ease: REVEAL.ease,
+        scrollTrigger: {
+          trigger: el,
+          start: "top 85%",
+          once: true,
+        },
+      });
+    }, el);
+
+    return () => ctx.revert();
+  }, [reduced, delay, stagger]);
+
   return (
-    <motion.div
-      className={className}
-      initial={reduced ? false : { opacity: 0, y: 26, filter: "blur(3px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once: true, margin: "-30px" }}
-      transition={{ duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] }}
-    >
+    <div ref={ref} className={className}>
       {children}
-    </motion.div>
+    </div>
   );
 }
 
@@ -100,27 +113,47 @@ const prototypeSteps = [
 
 function PrototypeRail() {
   const reduced = usePrefersReducedMotion();
+  const ref = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || reduced) return;
+
+    const ctx = gsap.context(() => {
+      gsap.from(".prototype-step", {
+        opacity: 0,
+        x: (i: number) => (i % 2 ? 18 : -18),
+        duration: 0.55,
+        stagger: 0.1,
+        ease: REVEAL.ease,
+        clearProps: "transform,opacity",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 80%",
+          once: true,
+        },
+      });
+    }, el);
+
+    return () => ctx.revert();
+  }, [reduced]);
+
   return (
-    <div className="prototype-rail" aria-label="STACK-K learning prototype">
+    <div ref={ref} className="prototype-rail" aria-label="STACK-K learning prototype">
       <div className="prototype-rail-intro">
-        <span className="eyebrow"><span>PROTOTYPE / 01</span> THE IMMERSIVE LOOP</span>
+        <span className="eyebrow">
+          <span>PROTOTYPE / 01</span> THE IMMERSIVE LOOP
+        </span>
         <p>From curiosity to capability.</p>
       </div>
       <div className="prototype-steps">
         {prototypeSteps.map((step, index) => (
-          <motion.div
-            key={step.index}
-            className="prototype-step"
-            initial={reduced ? false : { opacity: 0, x: index % 2 ? 18 : -18 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.6 }}
-            transition={{ duration: 0.55, delay: index * 0.1 }}
-          >
+          <div key={step.index} className="prototype-step">
             <span>{step.index}</span>
             <strong>{step.label}</strong>
             <p>{step.detail}</p>
             {index < prototypeSteps.length - 1 && <i aria-hidden="true" />}
-          </motion.div>
+          </div>
         ))}
       </div>
     </div>
@@ -161,77 +194,150 @@ const briefSections = [
 function BriefSequence() {
   const reduced = usePrefersReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"],
-  });
-  const stageY = useTransform(scrollYProgress, [0, 0.72, 1], [0, reduced ? 0 : -34, -72]);
-  const stageScale = useTransform(scrollYProgress, [0, 0.72, 1], [1, 0.98, 0.94]);
-  const stageOpacity = useTransform(scrollYProgress, [0, 0.82, 1], [1, 1, 0.72]);
-  const whiteReveal = useTransform(scrollYProgress, [0.55, 1], ["100%", "0%"]);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const whiteRef = useRef<HTMLDivElement>(null);
+  const parallaxRef = useRef<HTMLDivElement>(null);
   const lines = Array.from({ length: 24 });
+
+  // Entrance timeline and scroll scrub live in one context so a single revert
+  // puts the hero back to its static markup.
+  useLayoutEffect(() => {
+    if (reduced) return;
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const ctx = gsap.context(() => {
+      gsap
+        .timeline({ defaults: { ease: "power3.out" } })
+        .from(".brief-eyebrow", { opacity: 0, y: 18, duration: 0.6 })
+        .from(".brief-line", { opacity: 0, y: 46, duration: 0.95, stagger: 0.12 }, "-=0.35")
+        .from(".brief-sequence-tagline", { opacity: 0, y: 16, duration: 0.6 }, "-=0.55")
+        .from(".brief-sequence-lead", { opacity: 0, y: 16, duration: 0.6 }, "-=0.5")
+        .from(
+          ".brief-sequence-chapter",
+          { opacity: 0, y: 26, duration: 0.6, stagger: 0.09 },
+          "-=0.35",
+        )
+        .from(
+          [".brief-sequence-coordinate", ".brief-sequence-scroll"],
+          { opacity: 0, duration: 0.6, stagger: 0.1 },
+          "-=0.4",
+        );
+
+      // Scroll-driven exit: the stage drifts back while the white panel rises,
+      // mirroring the original motion timeline keyframe for keyframe.
+      gsap
+        .timeline({
+          defaults: { ease: "none" },
+          scrollTrigger: {
+            trigger: section,
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
+        })
+        .to(stageRef.current, { y: -34, scale: 0.98, duration: 0.72 }, 0)
+        .to(stageRef.current, { y: -72, scale: 0.94, duration: 0.28 }, 0.72)
+        .to(stageRef.current, { opacity: 0.72, duration: 0.18 }, 0.82)
+        .fromTo(whiteRef.current, { y: "100%" }, { y: "0%", duration: 0.45 }, 0.55);
+    }, section);
+
+    return () => ctx.revert();
+  }, [reduced]);
+
+  // A small amount of pointer depth sells the VR framing. Desktop pointers only.
+  useEffect(() => {
+    if (reduced) return;
+    const target = parallaxRef.current;
+    if (!target || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
+    const moveX = gsap.quickTo(target, "x", { duration: 1, ease: "power3.out" });
+    const moveY = gsap.quickTo(target, "y", { duration: 1, ease: "power3.out" });
+    const onMove = (event: PointerEvent) => {
+      moveX((event.clientX / window.innerWidth - 0.5) * 26);
+      moveY((event.clientY / window.innerHeight - 0.5) * 18);
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      gsap.killTweensOf(target);
+      gsap.set(target, { x: 0, y: 0 });
+    };
+  }, [reduced]);
+
   return (
     <section ref={sectionRef} className="brief-sequence" aria-labelledby="brief-heading">
-      <motion.div
-        className="brief-sequence-stage"
-        style={{ y: stageY, scale: stageScale, opacity: stageOpacity }}
-      >
+      <div className="brief-sequence-glow" aria-hidden="true" />
+      <div ref={stageRef} className="brief-sequence-stage">
         <div className="brief-sequence-rays" aria-hidden="true">
           {lines.map((_, index) => (
             <i
               key={index}
-              style={{ "--ray-angle": `${index * 15}deg`, "--ray-delay": `${index * 0.05}s` } as React.CSSProperties}
+              style={
+                {
+                  "--ray-angle": `${index * 15}deg`,
+                  "--ray-delay": `${index * 0.05}s`,
+                } as React.CSSProperties
+              }
             />
           ))}
         </div>
-        <div className="brief-sequence-orbit" aria-hidden="true" />
-        <div className="brief-sequence-core" aria-hidden="true">
-          {Array.from({ length: 10 }).map((_, index) => (
-            <i key={index} style={{ "--core-angle": `${index * 18}deg` } as React.CSSProperties} />
-          ))}
-          <span />
-        </div>
-        <div className="brief-sequence-copy">
-        <p className="eyebrow"><span>01 / PORTFOLIO CONTENT</span> A CURATED STACK-K STUDY</p>
-        <motion.h2
-          id="brief-heading"
-          initial={reduced ? false : { opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.55 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        >
-          THE STORY
-          <br />
-          <em>BEHIND</em> STACK-K.
-        </motion.h2>
-        <p className="brief-sequence-tagline">STACK KNOWLEDGE. SAVE TIME.</p>
-        <p className="brief-sequence-lead">A focused presentation of our concept, identity, and campaigns.</p>
-          <div className="brief-sequence-chapters" aria-label="Required portfolio content">
-          {briefSections.map((item, index) => (
-            <motion.article
-              key={item.number}
-              className="brief-sequence-chapter"
-              initial={reduced ? false : { opacity: 0, y: 22 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.4 }}
-              transition={{ duration: 0.55, delay: index * 0.08 }}
-            >
-              <div className="brief-sequence-chapter-head">
-                <span>{item.number}</span>
-                <span>STACK-K / CHAPTER</span>
-              </div>
-              <h3>{item.title}</h3>
-              <strong>{item.subtitle}</strong>
-              <p>{item.detail}</p>
-              <a href={item.href}>Explore {item.title.toLowerCase()} <ArrowUpRight size={14} /></a>
-            </motion.article>
-          ))}
+        <div ref={parallaxRef} className="brief-sequence-parallax" aria-hidden="true">
+          <div className="brief-sequence-orbit" />
+          <div className="brief-sequence-core">
+            {Array.from({ length: 10 }).map((_, index) => (
+              <i
+                key={index}
+                style={{ "--core-angle": `${index * 18}deg` } as React.CSSProperties}
+              />
+            ))}
+            <span />
           </div>
         </div>
-      </motion.div>
-      <motion.div className="brief-sequence-white-reveal" style={{ y: whiteReveal }} aria-hidden="true" />
+        <div className="brief-sequence-copy">
+          <p className="eyebrow brief-eyebrow">
+            <span>01 / PORTFOLIO CONTENT</span> A CURATED STACK-K STUDY
+          </p>
+          <h2 id="brief-heading">
+            <span className="brief-line">THE STORY</span>
+            <span className="brief-line">
+              <em>BEHIND</em> STACK-K.
+            </span>
+          </h2>
+          <p className="brief-sequence-tagline">STACK KNOWLEDGE. SAVE TIME.</p>
+          <p className="brief-sequence-lead">
+            A focused presentation of our concept, identity, and campaigns.
+          </p>
+          <div className="brief-sequence-chapters" aria-label="Required portfolio content">
+            {briefSections.map((item) => (
+              <article key={item.number} className="brief-sequence-chapter">
+                <div className="brief-sequence-chapter-head">
+                  <span>{item.number}</span>
+                  <span>STACK-K / CHAPTER</span>
+                </div>
+                <h3>{item.title}</h3>
+                <strong>{item.subtitle}</strong>
+                <p>{item.detail}</p>
+                <a href={item.href}>
+                  Explore {item.title.toLowerCase()} <ArrowUpRight size={14} />
+                </a>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div ref={whiteRef} className="brief-sequence-white-reveal" aria-hidden="true" />
       <span className="brief-sequence-coordinate">STACK-K / 01—04</span>
-      <span className="brief-sequence-scroll">EXPLORE THE STORY <ArrowDown size={15} /></span>
+      <span className="brief-sequence-scroll">
+        EXPLORE THE STORY{" "}
+        <LottieIcon
+          className="brief-cue-icon"
+          src="/lottie/scroll-cue.json"
+          size={15}
+          fallback={<ArrowDown size={15} />}
+        />
+      </span>
     </section>
   );
 }
@@ -261,8 +367,10 @@ function CustomCursor() {
     const frame = () => {
       current.current.x += (target.current.x - current.current.x) * 0.18;
       current.current.y += (target.current.y - current.current.y) * 0.18;
-      if (point.current) point.current.style.transform = `translate3d(${target.current.x}px, ${target.current.y}px, 0)`;
-      if (ring.current) ring.current.style.transform = `translate3d(${current.current.x}px, ${current.current.y}px, 0)`;
+      if (point.current)
+        point.current.style.transform = `translate3d(${target.current.x}px, ${target.current.y}px, 0)`;
+      if (ring.current)
+        ring.current.style.transform = `translate3d(${current.current.x}px, ${current.current.y}px, 0)`;
       frameId = requestAnimationFrame(frame);
     };
     window.addEventListener("pointermove", move, { passive: true });
@@ -278,7 +386,11 @@ function CustomCursor() {
   return (
     <>
       <span ref={point} className="custom-cursor-point" aria-hidden="true" />
-      <span ref={ring} className={`custom-cursor-ring${active ? " is-active" : ""}`} aria-hidden="true">
+      <span
+        ref={ring}
+        className={`custom-cursor-ring${active ? " is-active" : ""}`}
+        aria-hidden="true"
+      >
         {label}
       </span>
     </>
@@ -294,6 +406,8 @@ export default function App() {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
   const pendingFocus = useRef<HTMLElement | null>(null);
+  const headerRef = useRef<HTMLElement>(null);
+  const menuOpenRef = useRef(false);
   const reduced = usePrefersReducedMotion();
   const closeOverlay = useCallback(() => setOverlay(null), []);
   const focusAfterClose = useCallback(() => {
@@ -325,10 +439,47 @@ export default function App() {
     }
     setOverlay(null);
     setMenuOpen(false);
-    requestAnimationFrame(() =>
-      document.getElementById(id)?.scrollIntoView({ behavior: reduced ? "instant" : "smooth" }),
-    );
+    // Wait a frame so an open dialog can unmount and release its scroll lock
+    // before Lenis starts moving the page.
+    requestAnimationFrame(() => scrollToTarget(id));
   };
+
+  // Cover-fit photography only: the drift is a few pixels either side of rest,
+  // so it reads as depth rather than as the image sliding out of its frame.
+  useImageParallax(".experience-photo > img[data-parallax]", [reduced, filter]);
+  useImageParallax(".team-photo-button > img[data-parallax]", [reduced]);
+
+  useEffect(() => {
+    const stop = startSmoothScroll();
+    const unbind = bindAnchorScrolling();
+    return () => {
+      unbind();
+      stop();
+    };
+  }, [reduced]);
+
+  // The About orbit ring has no photo to parallax, so it drifts instead:
+  // scroll progress writes --ring-y, which the ring reads via `translate`.
+  useLayoutEffect(() => {
+    const section = document.getElementById("about");
+    if (!section || reduced) return;
+
+    const ctx = gsap.context(() => {
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top bottom",
+        end: "bottom top",
+        onUpdate: (self) => {
+          section.style.setProperty("--ring-y", `${(0.5 - self.progress) * 90}px`);
+        },
+      });
+    }, section);
+
+    return () => {
+      ctx.revert();
+      section.style.removeProperty("--ring-y");
+    };
+  }, [reduced]);
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) =>
@@ -358,6 +509,80 @@ export default function App() {
     return () => document.removeEventListener("keydown", handle);
   }, [menuOpen]);
 
+  // Keep a mirror of the menu state so the scroll handler below never has to
+  // re-subscribe (and never captures a stale value) just because it opened.
+  useEffect(() => {
+    menuOpenRef.current = menuOpen;
+  }, [menuOpen]);
+
+  // Navbar behaviour: a shadow once the page has left the top, hide on a
+  // committed downward run, reveal on the way back up — and always reveal when
+  // scrolling settles so the bar can never be left stranded off-screen after an
+  // anchor jump. Everything is a class toggle, so the header only ever moves on
+  // the compositor.
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+
+    let lastY = window.scrollY;
+    let direction = 0;
+    let travelled = 0;
+    let frame = 0;
+    let settle: ReturnType<typeof setTimeout> | undefined;
+
+    const reveal = () => header.classList.remove("is-hidden");
+
+    const update = () => {
+      frame = 0;
+      const y = window.scrollY;
+      const delta = y - lastY;
+      lastY = y;
+
+      header.classList.toggle("is-scrolled", y > 8);
+
+      // Keep a reveal armed on every update, so a zero-delta scroll event can
+      // never clear the timer and leave the bar stranded off-screen.
+      if (settle) clearTimeout(settle);
+      settle = setTimeout(reveal, 700);
+
+      const canHide = !reduced && !menuOpenRef.current && y > 180;
+      if (!canHide) {
+        reveal();
+        direction = 0;
+        travelled = 0;
+        return;
+      }
+      if (delta === 0) return;
+
+      const next = delta > 0 ? 1 : -1;
+      if (next !== direction) {
+        direction = next;
+        travelled = 0;
+      }
+      travelled += Math.abs(delta);
+
+      // Lenis hands out a couple of pixels per frame, so wait for a committed
+      // run rather than reacting to the first nudge.
+      if (direction === 1 && travelled > 120) header.classList.add("is-hidden");
+      if (direction === -1 && travelled > 24) reveal();
+    };
+
+    const onScroll = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(update);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    update();
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+      if (settle) clearTimeout(settle);
+      header.classList.remove("is-hidden", "is-scrolled");
+    };
+  }, [reduced]);
+
   const filtered = experiences.filter((e) => filter === "All experiences" || e.category === filter);
   const selectedProduct =
     overlay?.type === "product" ? experiences.find((e) => e.id === overlay.id) : null;
@@ -369,7 +594,6 @@ export default function App() {
     selectedProduct?.title ||
     selectedPerson?.name ||
     "Photography credits";
-    "STACK-K";
   const caseStudy = (id: ProjectId) =>
     id === "identity" ? (
       <IdentityCaseStudy onCopy={copy} />
@@ -389,7 +613,7 @@ export default function App() {
       <a className="skip-link" href="#main">
         Skip to content
       </a>
-      <header className="site-header">
+      <header ref={headerRef} className="site-header">
         <div className="container header-inner">
           <a href="#home" className="header-logo" aria-label="STACK-K home">
             <Logo secondary />
@@ -466,11 +690,11 @@ export default function App() {
             </Reveal>
             <div className="history-layout">
               <span className="eyebrow">OUR STORY</span>
-              <div>
+              <Reveal stagger={0.12}>
                 {company.history.map((p) => (
                   <p key={p}>{p}</p>
                 ))}
-              </div>
+              </Reveal>
             </div>
             <Reveal className="purpose-editorial">
               <div>
@@ -543,6 +767,7 @@ export default function App() {
                 key={experience.id}
                 experience={experience}
                 index={i}
+                revision={filter}
                 onOpen={() => setOverlay({ type: "product", id: experience.id })}
               />
             ))}
@@ -618,7 +843,7 @@ export default function App() {
                   className="team-photo-button"
                   aria-label={`View profile: ${person.name}`}
                 >
-                  <img src={person.image} alt={person.name} loading="lazy" />
+                  <img src={person.image} alt={person.name} loading="lazy" data-parallax />
                   <span className="team-index">0{i + 1}</span>
                   <span className="profile-arrow">
                     <ArrowUpRight size={22} strokeWidth={1.3} />
@@ -637,7 +862,6 @@ export default function App() {
             been added.
           </p>
         </section>
-
       </main>
 
       <footer className="site-footer container">
@@ -816,27 +1040,79 @@ export default function App() {
 function ExperiencePreview({
   experience,
   index,
+  revision,
   onOpen,
 }: {
   experience: Experience;
   index: number;
+  /** Mirrors the active filter so the grid re-enters whenever it changes. */
+  revision: string;
   onOpen: () => void;
 }) {
+  const ref = useRef<HTMLElement>(null);
   const reduced = usePrefersReducedMotion();
+
+  // The card rises as a whole, then its copy resolves line by line. The context
+  // is reverted on every filter switch so nothing is left hidden behind a
+  // trigger that already fired.
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || reduced) return;
+
+    const ctx = gsap.context(() => {
+      const copy = el.querySelector(".experience-copy");
+      const parts = copy ? Array.from(copy.children) : [];
+
+      const timeline = gsap.timeline({
+        defaults: { ease: REVEAL.ease },
+        delay: (index % 3) * 0.07,
+        scrollTrigger: {
+          trigger: el,
+          start: "top 85%",
+          once: true,
+        },
+      });
+
+      // clearProps hands the transform back to CSS so the hover lift below is
+      // never fighting an inline style left behind by the entrance.
+      timeline.from(el, {
+        opacity: 0,
+        y: 24,
+        duration: REVEAL.duration,
+        clearProps: "transform,opacity",
+      });
+
+      if (parts.length) {
+        timeline.from(
+          parts,
+          {
+            opacity: 0,
+            y: 16,
+            duration: 0.6,
+            stagger: 0.07,
+            clearProps: "transform,opacity",
+          },
+          "-=0.4",
+        );
+      }
+    }, el);
+
+    return () => ctx.revert();
+  }, [reduced, index, revision]);
+
   return (
-    <motion.article
-      className={`experience-preview experience-${experience.id}`}
-      initial={reduced ? false : { opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-25px" }}
-      transition={{ duration: 0.65, delay: (index % 3) * 0.07, ease: [0.22, 1, 0.36, 1] }}
-    >
+    <article ref={ref} className={`experience-preview experience-${experience.id}`}>
       <button
         className="experience-photo"
         onClick={onOpen}
         aria-label={`Explore ${experience.title}`}
       >
-        <img src={`/images/${experience.id}.webp`} alt={photoAlt[experience.id]} loading="lazy" />
+        <img
+          src={`/images/${experience.id}.webp`}
+          alt={photoAlt[experience.id]}
+          loading="lazy"
+          data-parallax
+        />
         <span>0{index + 1}</span>
         <i>
           <ArrowUpRight size={23} strokeWidth={1.3} />
@@ -850,7 +1126,7 @@ function ExperiencePreview({
           Explore <ArrowUpRight size={15} />
         </button>
       </div>
-    </motion.article>
+    </article>
   );
 }
 const photoAlt: Record<string, string> = {

@@ -1,6 +1,7 @@
-import { useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { motion, useMotionValueEvent, useScroll, useSpring, useTransform } from "motion/react";
 import { usePrefersReducedMotion } from "../hooks/usePrefersReducedMotion";
+import { gsap } from "../lib/gsap";
 import { ArrowRight, ArrowUpRight, Compass, Home, Layers3, Play } from "lucide-react";
 import { brandAssets, featuredVisual, palette, projects, type ProjectId } from "../data";
 import { ExperimentPreview, experiments, type ExperimentId } from "./PlayLab";
@@ -8,6 +9,7 @@ import { Logo, ProjectVisual } from "./CaseStudies";
 import LogoFilm from "./LogoFilm";
 import BrandCaption from "./BrandCaption";
 import ContourRibbon from "./ContourRibbon";
+import { LottieIcon } from "./LottieIcon";
 import styles from "./PortfolioEnhancements.module.css";
 
 export function HeroVisual({ onOpen, onMotion }: { onOpen: () => void; onMotion: () => void }) {
@@ -254,25 +256,47 @@ export function BrandPreview({
 
 export function FooterSignature() {
   const reduced = usePrefersReducedMotion();
+  const logoRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const el = logoRef.current;
+    if (!el || reduced) return;
+
+    const ctx = gsap.context(() => {
+      gsap.from(el, {
+        opacity: 0,
+        y: 18,
+        duration: 0.8,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 92%",
+          once: true,
+        },
+      });
+    }, el);
+
+    return () => ctx.revert();
+  }, [reduced]);
+
   return (
     <div className={styles.footerSignature}>
       <div>
         <span>THERE’S A WHOLE NEW WORLD TO KNOW.</span>
         <a href="#world">
-          Stay curious <ArrowUpRight size={15} />
+          Stay curious{" "}
+          <LottieIcon
+            src="/lottie/cta-arrow.json"
+            size={15}
+            fallback={<ArrowUpRight size={15} />}
+          />
         </a>
       </div>
       <div className={styles.signatureArtwork}>
         <ContourRibbon />
-        <motion.div
-          className={styles.signatureLogo}
-          initial={reduced ? false : { opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
+        <div ref={logoRef} className={styles.signatureLogo}>
           <Logo secondary />
-        </motion.div>
+        </div>
       </div>
       <p>STACK KNOWLEDGE. SAVE TIME.</p>
     </div>
